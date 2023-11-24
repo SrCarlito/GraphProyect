@@ -34,34 +34,42 @@ public class Grafo {
         return listaAdyacencia.containsKey(vertice);
     }
 
-    public void agregarArista(int origen, int destino, int peso) {
+    public boolean agregarArista(int origen, int destino, int peso) {
         if (existeVertice(destino) && existeVertice(origen)) {
             Arista arista = new Arista(destino, peso);
             listaAdyacencia.get(origen).add(arista);
+            return true;
         }
+        return false;
     }
 
-    public void eliminarArista(int origen, int destino) {
+    public boolean eliminarArista(int origen, int destino) {
         if (existeArista(origen, destino)) {
             listaAdyacencia.get(origen).remove(destino);
+            return true;
         }
+        return false;
     }
 
-    public void agregarVertice(int vertice) {
+    public boolean agregarVertice(int vertice) {
         if (!existeVertice(vertice)) {
             listaAdyacencia.put(vertice, new LinkedList<>());
             numVertices++;
+            return true;
         }
+        return false;
     }
 
-    public void eliminarVertice(int vertice) {
+    public boolean eliminarVertice(int vertice) {
         if (existeVertice(vertice)) {
             listaAdyacencia.remove(vertice);
             for (Integer destino : listaAdyacencia.keySet()) {
                 eliminarArista(vertice, destino);
             }
             numVertices--;
+            return true;
         }
+        return false;
 
     }
 
@@ -72,9 +80,19 @@ public class Grafo {
         return -1;
     }
 
+    public int[] obtenerVertices() {
+        int[] vertices = new int[numVertices];
+
+        int i = 0;
+        for (Integer vertice : listaAdyacencia.keySet()) {
+            vertices[i] = vertice;
+            i++;
+        }
+        return vertices;
+    }
+    
     public List<Arista> obtenerVecinos(int vertice) {
         return listaAdyacencia.get(vertice);
     }
 
 }
-
