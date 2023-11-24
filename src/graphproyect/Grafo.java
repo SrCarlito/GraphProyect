@@ -25,7 +25,11 @@ public class Grafo {
 
     public boolean existeArista(int origen, int destino) {
         if (listaAdyacencia.containsKey(origen)) {
-            return listaAdyacencia.get(origen).contains(destino);
+            for(Arista a:listaAdyacencia.get(origen)){
+                if(a.getDestino() == destino){
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -35,7 +39,7 @@ public class Grafo {
     }
 
     public boolean agregarArista(int origen, int destino, int peso) {
-        if (existeVertice(destino) && existeVertice(origen)) {
+        if (existeVertice(destino) && existeVertice(origen) && (origen != destino)) {
             Arista arista = new Arista(destino, peso);
             listaAdyacencia.get(origen).add(arista);
             return true;
@@ -45,8 +49,12 @@ public class Grafo {
 
     public boolean eliminarArista(int origen, int destino) {
         if (existeArista(origen, destino)) {
-            listaAdyacencia.get(origen).remove(destino);
-            return true;
+            for(Arista a:listaAdyacencia.get(origen)){
+                if(a.getDestino() == destino){
+                    listaAdyacencia.get(origen).remove(a);
+                    return true;
+                }
+            }
         }
         return false;
     }
