@@ -108,7 +108,96 @@ public class GraphProyect {
 // -------------------------------------------------------------------------
 
 
+// ----------------- Prueba añadir vertices al grafo -------------------------------
 
+        // Agregar un nuevo vértice al grafo
+        int nuevoVertice = 4;
+        boolean verticeAgregado = grafo.agregarVertice(nuevoVertice);
+
+        if (verticeAgregado) {
+            System.out.println("Vértice " + nuevoVertice + " agregado correctamente.");
+        } else {
+            System.out.println("No se pudo agregar el vértice " + nuevoVertice + ". Probablemente ya exista en el grafo.");
+        }
+
+        // Verificar si el vértice ha sido agregado consultando los vértices del grafo
+        int[] verticesActualizados = grafo.obtenerVertices();
+        System.out.println("Vértices actuales del grafo:");
+        for (int vertice : verticesActualizados) {
+            System.out.print(vertice + " ");
+        }
+        System.out.println();
+// -------------------------------------------------------------------------
+
+
+
+// ----------------- Prueba obtener los Vertices -------------------------------
+        // Obtener la lista de vértices del grafo
+        int[] vertices = grafo.obtenerVertices();
+
+        // Imprimir los vértices obtenidos
+        System.out.println("Vértices del grafo:");
+        for (int vertice : vertices) {
+            System.out.print(vertice + " ");
+        }
+        System.out.println();
+
+// ----------------------------------------------------------------------------
+
+
+
+// ------------------------------------------   ---------------------------------
+        // Agregar aristas al vértice 4
+        int verticeCreado = 4;
+
+        // Agregar aristas que tengan al vértice creado como origen
+        grafo.agregarArista(verticeCreado, 0, 5);
+        grafo.agregarArista(verticeCreado, 1, 8);
+
+        // Agregar aristas que tengan al vértice creado como destino
+        grafo.agregarArista(2, verticeCreado, 3);
+        grafo.agregarArista(3, verticeCreado, 7);
+
+            int verticeParaVecinos2 = 4;
+            List<Arista> vecinos2 = grafo.obtenerVecinos(verticeParaVecinos2);
+            System.out.println("****************** Vecinos de un vertice ******************");
+            System.out.println("Vecinos del vértice " + verticeParaVecinos2 + ":");
+            for (Arista arista : vecinos2) {
+                System.out.println("Destino: " + arista.getDestino() + ", Peso: " + arista.getPeso());
+            }
+            System.out.println("-----------------------------------------------");
+        
+        
+
+
+
+// -----------------------------------------------------------------------
+
+
+// ------------------------------- eliminar vertice ----------------------------------
+
+
+        // Eliminar el vértice 4 del grafo
+        int verticeAEliminar = 4;
+        boolean verticeEliminado = grafo.eliminarVertice(verticeAEliminar);
+
+        if (verticeEliminado) {
+            System.out.println("Vértice " + verticeAEliminar + " eliminado correctamente del grafo.");
+        } else {
+            System.out.println("No se pudo eliminar el vértice " + verticeAEliminar + ". Comprueba si el vértice existe en el grafo.");
+        }
+
+        // Obtener los vértices actualizados después de eliminar el vértice 4
+        int[] verticesActualizadosRemove = grafo.obtenerVertices();
+        System.out.println("Vértices actuales del grafo después de eliminar el vértice " + verticeAEliminar + ":");
+        for (int vertice : verticesActualizadosRemove) {
+            System.out.print(vertice + " ");
+        }
+        System.out.println();
+
+
+
+// ----------------------------------------------------------------------------------
 
 
 
