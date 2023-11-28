@@ -23,6 +23,10 @@ public class Grafo {
         }
     }
 
+    public int getNumVertices(){
+        return numVertices;
+    }
+
     public boolean existeArista(int origen, int destino) {
         if (listaAdyacencia.containsKey(origen)) {
             return listaAdyacencia.get(origen).contains(destino);
