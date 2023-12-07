@@ -325,18 +325,8 @@ public class Grafo {
             aristas.get(i).sort(Comparator.comparingInt(Arista::getPeso));//0rdenar de menor a mayor
         }
 
-        // Verificar si hay aristas con pesos negativos
-        boolean tienePesosNegativos = false;
-        for (int i = 0; i < getNumVertices(); i++) {
-            for (Arista arista : obtenerVecinos(i)) {
-                if (arista.getPeso() < 0) {
-                    tienePesosNegativos = true;
-                    break;
-                }
-            }
-        }
 
-        if (tienePesosNegativos) {
+        if (tienePesosNegativos()) {
             System.out.println(
                     "El grafo contiene aristas con pesos negativos, el algoritmo de Kruskal no puede ejecutarse correctamente.");
             return; // Retorna null para indicar que el grafo no es apto para Kruskal
@@ -364,14 +354,13 @@ public class Grafo {
         }
 
         // Imprimir resultado
-        for (int i : resultado.keySet()) {
-            System.out.print(i + ": ");
-            for (Arista arista : resultado.get(i)) {
-                System.out.print(arista.getDestino() + " ");
+        for (Map.Entry<Integer, List<Arista>> entry : resultado.entrySet()) {
+            int vertice = entry.getKey();
+            List<Arista> vecinos = entry.getValue();
+            for (Arista arista : vecinos) {
+                System.out.println(vertice + " <-> " + arista.getDestino() + " (" + arista.getPeso() + ")");
             }
-            System.out.println();
         }
-
        
     }
 
