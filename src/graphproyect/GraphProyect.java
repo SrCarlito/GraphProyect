@@ -24,30 +24,47 @@ public class GraphProyect {
      */
     
     public static void main(String[] args) {
-
-        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\example.json");
+        
+        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\bipartito.json");
 
         if (contenido != null && !contenido.isEmpty()) {
             Grafo grafo = construirGrafoDesdeJSON(contenido);
 
             if (grafo != null) {
-                Map<Integer,List< Arista>> arbolExpansionMinima = Grafo.obtenerArbolExpansionMinima(grafo);
+                System.out.println("El grafo fue construido exitosamente.");
+            
+                System.out.println("--------------------------------- ");
+                System.out.println("Algoritmo de Floyd-Warshall: ");
+                grafo.floydWarshall();
 
-    
-                // Mostrar el árbol de expansión mínima
-                System.out.println("Árbol de expansión mínima: ");
-                for (Map.Entry<Integer, List<Arista>> entry : arbolExpansionMinima.entrySet()) {
-                    int vertice = entry.getKey();
-                    List<Arista> vecinos = entry.getValue();
-                    for (Arista arista : vecinos) {
-                        System.out.println(vertice + " -> " + arista.getDestino() + " (" + arista.getPeso() + ")");
-                    }
-                }
+                System.out.println("--------------------------------- ");
+                System.out.println("Algoritmo de BFS: ");
+                grafo.BFS(0);
                 
+                System.out.println("--------------------------------- ");
+                System.out.println("Algoritmo de DFS: ");
+                grafo.DFS(0);
+
+                System.out.println("--------------------------------- ");
+                System.out.println("Algoritmo de Dijkstra: ");
+                grafo.dijkstra(0);
+
+
+                System.out.println("--------------------------------- ");
+                System.out.println("Algoritmo de Kruskal: ");
+                grafo.obtenerArbolExpansionMinima();
+
+                System.out.println("--------------------------------- ");
+                System.out.println("Colorear vértices:");
+                grafo.colorearVertices();
+
+
+                System.out.println("--------------------------------- ");
+                System.out.println("Encontrar emparejamientos:");
+                grafo.emparejamiento();
             } else {
                 System.out.println("No se pudo construir el grafo desde el archivo JSON.");
             }
-
         } else {
             System.out.println("El archivo JSON está vacío o no se pudo leer.");
         }
@@ -82,8 +99,11 @@ public class GraphProyect {
                 int destino = aristaJSON.getInt("destino");
                 int peso = aristaJSON.getInt("peso");
 
-                grafo.agregarArista(origen,destino, peso);
+                grafo.agregarArista(origen, destino, peso);
+
             }
+            
+
         } catch (Exception e) {
             e.printStackTrace();
         }

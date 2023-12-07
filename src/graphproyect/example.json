@@ -7,6 +7,8 @@
       {"origen": 1, "destino": 3, "peso": 8},
       {"origen": 1, "destino": 4, "peso": 5},
       {"origen": 2, "destino": 4, "peso": 7},
-      {"origen": 3, "destino": 4, "peso": 9}
+      {"origen": 3, "destino": 4, "peso": 9},
+        {"origen": 3, "destino": 5, "peso": 4},
+        {"origen": 4, "destino": 5, "peso": 5}
     ]
   }
