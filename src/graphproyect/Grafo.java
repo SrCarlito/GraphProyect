@@ -172,6 +172,7 @@ public class Grafo {
     }
 
     private void emparejamientoEstable(Set<Integer> solicitantes, Set<Integer> requeridos) {
+        System.out.println("--------------------");
         System.out.println("Emparejamiento estable");
         Map<Integer, Integer> emparejamiento = new HashMap<>();
         Set<Integer> solicitantesA = new HashSet<>(solicitantes);
@@ -239,6 +240,7 @@ public class Grafo {
     // Resto del código de la clase Grafo
 
     private void encontrarEmparejamientos() {
+        System.out.println("--------------------");
         System.out.println("Emparejamiento");
         ArrayList<int[]> parejas = encontrarParejas();
         ArrayList<int[]> emparejamiento = new ArrayList<>();

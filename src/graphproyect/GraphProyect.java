@@ -25,12 +25,16 @@ public class GraphProyect {
     
     public static void main(String[] args) {
         
-        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\bipartito.json");
+        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\example.json");
 
         if (contenido != null && !contenido.isEmpty()) {
             Grafo grafo = construirGrafoDesdeJSON(contenido);
 
             if (grafo != null) {
+
+                grafo.agregarVertice(18);
+                grafo.agregarVertice(19);
+                grafo.agregarArista(18, 19, 12);
                 System.out.println("El grafo fue construido exitosamente.");
             
                 System.out.println("--------------------------------- ");
