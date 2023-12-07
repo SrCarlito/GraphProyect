@@ -25,7 +25,7 @@ public class GraphProyect {
     
     public static void main(String[] args) {
         
-        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\bipartito.json");
+        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\example.json");
 
         if (contenido != null && !contenido.isEmpty()) {
             Grafo grafo = construirGrafoDesdeJSON(contenido);
@@ -86,18 +86,27 @@ public class GraphProyect {
         Grafo grafo = null;
         try {
             JSONObject jsonObject = new JSONObject(contenido);
-            JSONArray verticesJSON = jsonObject.getJSONArray("vertices");
             JSONArray aristasJSON = jsonObject.getJSONArray("aristas");
 
             // Crear el grafo con la cantidad de vértices
-            grafo = new Grafo(verticesJSON.length());
+            grafo = new Grafo(0);
 
             // Agregar las aristas al grafo
             for (int i = 0; i < aristasJSON.length(); i++) {
+                
                 JSONObject aristaJSON = aristasJSON.getJSONObject(i);
                 int origen = aristaJSON.getInt("origen");
                 int destino = aristaJSON.getInt("destino");
                 int peso = aristaJSON.getInt("peso");
+
+                if (!grafo.existeVertice(origen)) {
+                    grafo.agregarVertice(origen);
+                }
+                
+                if (!grafo.existeVertice(destino)) {
+                    grafo.agregarVertice(destino);
+                }
+                
 
                 grafo.agregarArista(origen, destino, peso);
 

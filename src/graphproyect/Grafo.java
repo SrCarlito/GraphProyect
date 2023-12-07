@@ -4,6 +4,8 @@
  */
 package graphproyect;
 
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.*;
 
 public class Grafo {
@@ -95,9 +97,11 @@ public class Grafo {
 
         int i = 0;
         for (Integer vertice : listaAdyacencia.keySet()) {
+
             vertices[i] = vertice;
             i++;
         }
+
         return vertices;
     }
 
@@ -133,31 +137,57 @@ public class Grafo {
     }
 
     public void emparejamiento() {
-        if (esBipartito()) {
-            emparejamientoEstable();
-        } else {
+
+        Map<Integer, Integer> colores = esBipartito();
+
+        Set<Integer> solicitantes = new HashSet<>();
+        Set<Integer> requeridos = new HashSet<>();
+
+        int count0 = 0;
+        int count1 = 0;
+        for (int i : colores.keySet()) {
+            if (colores.get(i) == 0) {
+                count0++;
+                solicitantes.add(i);
+            } else if (colores.get(i) == 1) {
+                count1++;
+                requeridos.add(i);
+            }
+        }
+
+        boolean bipartito = count0 + count1 == numVertices && count0 == count1;
+
+        if (!bipartito) {
             encontrarEmparejamientos();
+        } else {
+            emparejamientoEstable(solicitantes, requeridos);
             ;
         }
     }
     
-    private boolean esBipartito() {
-        int[] colores = new int[numVertices + 1];
-        Arrays.fill(colores, -1);
+    private void emparejamientoEstable(Set<Integer> solicitantes, Set<Integer> requeridos) {
 
-        for (int i = 1; i <= numVertices; i++) {
-            if (colores[i] == -1) {
-                if (!esBipartitoUtil(i, colores)) {
-                    return false;
-                }
+        
+    }
+
+    private Map<Integer,Integer> esBipartito() {
+        Map<Integer,Integer> colores = new HashMap<>();
+        for (int i : obtenerVertices()) {
+            colores.put(i, -1);
+        }
+
+
+        for (int i :colores.keySet()) {
+            if (colores.get(i) == -1) {
+                esBipartitoUtil(i, colores);
             }
         }
 
-        return true;
+        return colores;
     }
 
-    private boolean esBipartitoUtil(int vertice, int[] colores) {
-        colores[vertice] = 1;
+    private void esBipartitoUtil(int vertice, Map<Integer,Integer> colores) {
+        colores.put(vertice, 1);
 
         Queue<Integer> cola = new LinkedList<>();
         cola.add(vertice);
@@ -165,25 +195,22 @@ public class Grafo {
         while (!cola.isEmpty()) {
             int actual = cola.poll();
 
-            List<Arista> vecinos = obtenerVecinos(actual);
+            List<Arista> vecinos = obtenerVecinosNoDirigido(actual);
             for (Arista arista : vecinos) {
                 int destino = arista.getDestino();
 
-                if (colores[destino] == -1) {
-                    colores[destino] = 1 - colores[actual];
+                if (colores.get(destino) == -1) {
+                    colores.put(destino, 1 - colores.get(actual));
                     cola.add(destino);
-                } else if (colores[destino] == colores[actual]) {
-                    return false;
                 }
             }
         }
-
-        return true;
     }
 
-    private void emparejamientoEstable() {
-        System.out.println("Emparejamiento estable: ");
-    }
+    // Resto del código de la clase Grafo
+
+
+
     private void encontrarEmparejamientos() {
         ArrayList<int[]> parejas = encontrarParejas();
         ArrayList<int[]> emparejamiento = new ArrayList<>();
@@ -195,10 +222,10 @@ public class Grafo {
             ArrayList<int[]> res = encontrarEmparejamiento(parejas);
 
             if (res.size() > major) {
-                emparejamiento = res;                                           
+                emparejamiento = res;
                 major = res.size();
             }
-            
+
             parejas.add(parejas.remove(count)); // [1,2,3] -> [3,1,2]
             count++;
         }
@@ -229,9 +256,9 @@ public class Grafo {
     }
 
     private ArrayList<int[]> encontrarParejas() {
-        ArrayList<Integer> usados = new ArrayList<>();//[1,2],[1,3]
+        ArrayList<Integer> usados = new ArrayList<>();// [1,2],[1,3]
         ArrayList<int[]> res = new ArrayList<>();
-        
+
         for (int origen : obtenerVertices()) {
             for (Arista destino : obtenerVecinosNoDirigido(origen)) {
                 if (!usados.contains(origen) && !usados.contains(destino.getDestino())) {
@@ -248,13 +275,13 @@ public class Grafo {
     public void colorearVertices() {
         Map<Integer, Integer> colores = new HashMap<>();
 
-        //inicializar colores
-        for(int j =0; j < numVertices; j++){
+        // inicializar colores
+        for (int j = 0; j < numVertices; j++) {
             colores.put(j, j);
         }
         // Conjunto de números ya usados
         Set<Integer> coloresPosibles = new HashSet<>();
-        
+
         Random random = new Random();
         while (coloresPosibles.size() < numVertices) {
             int randomNumber = random.nextInt(8000000);
@@ -263,13 +290,13 @@ public class Grafo {
             }
         }
 
-        //Ordenar vertices por grado
+        // Ordenar vertices por grado
         List<Integer> vertices = new ArrayList<>();
         for (int v : obtenerVertices()) {
             vertices.add(v);
         }
 
-        //Asignar colores
+        // Asignar colores
         for (int c = 0; c < numVertices; c++) {
             Map<Integer, Integer> colorestemp = new HashMap<>();
 
@@ -285,12 +312,12 @@ public class Grafo {
             }
             vertices.add(vertices.remove(0));
         }
-        //Mostrar colores
+        // Mostrar colores
         for (int k : colores.keySet()) {
             System.out.println(k + " : " + colores.get(k));
         }
- 
-        //Mostrar numero cromatico
+
+        // Mostrar numero cromatico
         Set<Integer> coloresDiff = new HashSet<>(colores.values());
         System.out.println("El numero cromático estimado del grafo es: " + coloresDiff.size());
 
@@ -299,10 +326,9 @@ public class Grafo {
     private int asignarColor(int v, Map<Integer, Integer> colores, Set<Integer> coloresPosibles) {
         List<Arista> vecinos = obtenerVecinosNoDirigido(v);
 
-        //Copiar colores posibles
+        // Copiar colores posibles
         Set<Integer> coloresp = new HashSet<>(coloresPosibles);
-        
-        
+
         for (Arista vecino : vecinos) {
             if (colores.containsKey(vecino.getDestino())) {
                 coloresp.remove(colores.get(vecino.getDestino()));
@@ -322,9 +348,8 @@ public class Grafo {
 
         // Ordenar aristas
         for (int i : aristas.keySet()) {
-            aristas.get(i).sort(Comparator.comparingInt(Arista::getPeso));//0rdenar de menor a mayor
+            aristas.get(i).sort(Comparator.comparingInt(Arista::getPeso));// 0rdenar de menor a mayor
         }
-
 
         if (tienePesosNegativos()) {
             System.out.println(
@@ -361,7 +386,7 @@ public class Grafo {
                 System.out.println(vertice + " <-> " + arista.getDestino() + " (" + arista.getPeso() + ")");
             }
         }
-       
+
     }
 
     public boolean tienePesosNegativos() {
@@ -376,93 +401,99 @@ public class Grafo {
     }
 
     public void dijkstra(int nodoOrigen) {
-        int numVertices = getNumVertices();//numero de vertices
-        boolean[] visitado = new boolean[numVertices]; //arreglo de booleanos para saber si ya se visito un nodo
-
-        int[] distancias = new int[numVertices]; //se crea un arreglo de distancias
-        Arrays.fill(distancias, Integer.MAX_VALUE); //llenar el arreglo de distancias con valores maximos
+        Map<Integer, Boolean> visitado = new HashMap<>(); // arreglo de booleanos para saber si ya se visito un nodo
+        Map<Integer,Integer> distancias = new HashMap<>(); // arreglo de distancias
         
-        distancias[nodoOrigen] = 0;//la distancia del nodo origen a el mismo es 0 (distancia minima)
-    
-        for (int i : obtenerVertices()) { //recorrer todos los nodos
-            int nodoActual = obtenerNodoMinimo(distancias, visitado);//obtener el nodo con la distancia minima
-            visitado[nodoActual] = true;//marcar el nodo como visitado
-    
-            for (Arista arista : obtenerVecinos(nodoActual)) {//recorrer los vecinos del nodo actual
-                int nodoDestino = arista.getDestino();//obtener el nodo destino
-                int peso = arista.getPeso();//obtener el peso de la arista
-                if (!visitado[nodoDestino] && distancias[nodoActual] != Integer.MAX_VALUE && //si el nodo no ha sido visitado y la distancia del nodo actual es diferente de infinito
-                        distancias[nodoActual] + peso < distancias[nodoDestino]) //y la distancia del nodo actual mas el peso de la arista es menor a la distancia del nodo destino
-                        { 
-                            distancias[nodoDestino] = distancias[nodoActual] + peso; //la distancia del nodo destino es igual a la distancia del nodo actual mas el peso de la arista
+        for (int i : obtenerVertices()) { // recorrer todos los nodos
+            visitado.put(i, false); // inicializar todos los nodos como no visitados
+            distancias.put(i, Integer.MAX_VALUE); // inicializar todas las distancias como infinito
+        }        
+        distancias.put(nodoOrigen, 0);// la distancia del nodo origen a el mismo es 0 (distancia minima)
+
+        for (int i : obtenerVertices()) { // recorrer todos los nodos
+            int nodoActual = obtenerNodoMinimo(distancias, visitado);// obtener el nodo con la distancia minima
+            visitado.put(nodoActual, true);// marcar el nodo como visitado
+
+            for (Arista arista : obtenerVecinos(nodoActual)) {// recorrer los vecinos del nodo actual
+                int nodoDestino = arista.getDestino();// obtener el nodo destino
+                int peso = arista.getPeso();// obtener el peso de la arista
+                if (!visitado.get(nodoDestino) && distancias.get(nodoActual) != Integer.MAX_VALUE && // si el nodo no ha sido                                                                 // diferente de infinito
+                        distancias.get(nodoActual) + peso < distancias.get(nodoDestino)) // y la distancia del nodo actual                               // el peso de la arista es menor a la                                                                                 // distancia del nodo destino
+                {
+                    distancias.put(nodoDestino, distancias.get(nodoActual) + peso); // la distancia del nodo destino es igual a
+                                                                                    // la distancia del nodo actual mas el peso de la arista
                 }
             }
         }
-    
-        // Imprimir las distancias mínimas desde el nodo origen a todos los demás nodos válidos.
-        for (int i : obtenerVertices()) { //recorrer todos los nodos
-            if (distancias[i] != Integer.MAX_VALUE) { //si la distancia del nodo es diferente de infinito
-                System.out.println("Distancia desde " + nodoOrigen + " hasta " + i + ": " + distancias[i]); //imprimir la distancia desde el nodo origen hasta el nodo actual
+
+        // Imprimir las distancias mínimas desde el nodo origen a todos los demás nodos
+        // válidos.
+        for (int i : obtenerVertices()) { // recorrer todos los nodos
+            if (distancias.get(i) != Integer.MAX_VALUE) { // si la distancia del nodo es diferente de infinito
+                System.out.println("Distancia desde " + nodoOrigen + " hasta " + i + ": " + distancias.get(i)); // imprimir
+                                                                                         // actual
             }
         }
     }
 
-    private static int obtenerNodoMinimo(int[] distancias, boolean[] visitado) {
+    private static int obtenerNodoMinimo(Map<Integer,Integer> distancias, Map<Integer,Boolean> visitado) {
 
-        int minimo = Integer.MAX_VALUE;//valor maximo 
-        int nodoMinimo = -1;//nodo minimo 
-        for (int i = 0; i < distancias.length; i++) {//recorrer todos los nodos
-            if (!visitado[i] && distancias[i] <= minimo) {//Si el nodo no ha sido visitado y la distancia del nodo es menor o igual al minimo
-                minimo = distancias[i];//el minimo es igual a la distancia del nodo
-                nodoMinimo = i; //el nodo minimo es igual al nodo actual
+        int minimo = Integer.MAX_VALUE;// valor maximo
+        int nodoMinimo = -1;// nodo minimo
+        for (int i :distancias.keySet()) {// recorrer todos los nodos
+            if (!visitado.get(i) && distancias.get(i) <= minimo) {// Si el nodo no ha sido visitado y la distancia del nodo es
+                                                          // menor o igual al minimo
+                minimo = distancias.get(i);// el minimo es igual a la distancia del nodo
+                nodoMinimo = i; // el nodo minimo es igual al nodo actual
             }
         }
         if (nodoMinimo == -1) {// si el nodo minimo es igual a -1
-            throw new RuntimeException("No se puede encontrar un nodo minimo");//lanzar una excepcion
+            throw new RuntimeException("No se puede encontrar un nodo minimo");// lanzar una excepcion
         }
         return nodoMinimo;
     }
 
     public void floydWarshall() {
-        int numVertices = getNumVertices();
-        int[][] distancias = new int[numVertices][numVertices];
-    
+        Map<Integer, Map<Integer,Integer>> distancias = new HashMap<>();
+
         // Inicialización de la matriz de distancias
         // i representa el vertice inicial
         // j representa el vertice final
         for (int i : obtenerVertices()) {
-          for (int j : obtenerVertices()) {
-              final int finalJ = j; // Marcar como final
-              if (i == j) {
-                  distancias[i][j] = 0;
-              } else if (existeArista(i, j)) { //conexion directa entre i j
-                  int pesoArista = obtenerVecinos(i).stream()
-                          .filter(a -> a.getDestino() == finalJ)// Filtrar aristas que van a finalJ
-                          .findFirst()//regresa solo los vecinos
-                          .map(Arista::getPeso)//toma el peso de la arista
-                          .orElse(Integer.MAX_VALUE);
-                  distancias[i][j] = pesoArista; 
-              } else {
-                  distancias[i][j] = Integer.MAX_VALUE;
-              }
-          }
-      }
-    
+            Map<Integer, Integer> distanciasI = new HashMap<>();
+            for (int j : obtenerVertices()) {
+                if (i == j) {
+                    distanciasI.put(j, 0);
+                } else if (existeArista(i, j)) {
+                    distanciasI.put(j, obtenerVecinos(i).stream()
+                            .filter(a -> a.getDestino() == j)// Filtrar aristas que van a j
+                            .findFirst()// regresa solo los vecinos
+                            .map(Arista::getPeso)// toma el peso de la arista
+                            .orElse(Integer.MAX_VALUE));
+                } else {
+                    distanciasI.put(j, Integer.MAX_VALUE);
+                }
+            }
+            distancias.put(i, distanciasI);
+        }
+
         // Algoritmo de Floyd-Warshall
-        for (int k : obtenerVertices()) { //itera sobre todo los vertices como posible candidato
+        for (int k : obtenerVertices()) { // itera sobre todo los vertices como posible candidato
             for (int i : obtenerVertices()) {
                 for (int j : obtenerVertices()) {
-                    //Si existe  una distancia menor a la actual 
-                    if (distancias[i][k] != Integer.MAX_VALUE && distancias[k][j] != Integer.MAX_VALUE) {
-                        int nuevoPeso = distancias[i][k] + distancias[k][j];//Nuevo peso
+                    // Si existe una distancia menor a la actual
+                    if (distancias.get(i).get(k) != Integer.MAX_VALUE
+                            && distancias.get(k).get(j) != Integer.MAX_VALUE) {
+                        int nuevoPeso = distancias.get(i).get(k) + distancias.get(k).get(j);// Nuevo peso
 
-                        if (nuevoPeso < distancias[i][j]) {//Actualiza el peso si este es menor al anterior
-                            distancias[i][j] = nuevoPeso;
+                        if (nuevoPeso < distancias.get(i).get(j)) {// Actualiza el peso si este es menor al anterior
+                            distancias.get(i).put(j, nuevoPeso);
                         }
                     }
                 }
             }
         }
+        
         System.out.print("\t");
         for (int i : obtenerVertices()) {
             System.out.print(i + "\t");
@@ -472,30 +503,35 @@ public class Grafo {
         for (int i : obtenerVertices()) {
             System.out.print(i + "\t");
             for (int j : obtenerVertices()) {
-                //si la distancia es MAX_VALUE imprime INF de infinito
-                //de lo contrario, imprime la distancia
-                System.out.print(distancias[i][j] == Integer.MAX_VALUE ? "INF" : distancias[i][j]);
-                System.out.print("\t");
+                if (distancias.get(i).get(j) == Integer.MAX_VALUE) {
+                    System.out.print("INF\t");
+                } else {
+                    System.out.print(distancias.get(i).get(j) + "\t");
+                }
             }
             System.out.println();
         }
     }
 
     public void BFS(int inicio) {
-        boolean[] visitado = new boolean[getNumVertices()];
+        Map<Integer,Boolean> visitado = new HashMap<>();
         Queue<Integer> queue = new LinkedList<>();
 
-        visitado[inicio] = true;
+
+        visitado.put(inicio, true);
         queue.offer(inicio);
-        
+
+        for (int i : obtenerVertices()) {
+            visitado.put(i, false);
+        }
         while (!queue.isEmpty()) {
             int actual = queue.poll();
-            System.out.print(actual + " ");
-
+            System.out.print(actual + "  ");
+            
             for (Arista vecino : obtenerVecinos(actual)) {
                 int destino = vecino.getDestino();
-                if (!visitado[destino]) {
-                    visitado[destino] = true;
+                if (!visitado.get(destino)) {
+                    visitado.put(destino, true);
                     queue.offer(destino);
                 }
             }
@@ -503,16 +539,22 @@ public class Grafo {
     }
 
     public void DFS(int inicio) {
-        boolean[] visitado = new boolean[getNumVertices()];
+        Map<Integer, Boolean> visitado = new HashMap<>();
+        
+        for (int i : obtenerVertices()) {
+            visitado.put(i, false);
+        }
+
         dfsRecursivo(inicio, visitado);
     }
-    private void dfsRecursivo(int actual, boolean[] visitado) {
-        visitado[actual] = true;
+
+    private void dfsRecursivo(int actual, Map<Integer,Boolean> visitado) {
+        visitado.put(actual, true);
         System.out.println(actual + "");
 
         for (Arista vecino : obtenerVecinos(actual)) {
             int destino = vecino.getDestino();
-            if (!visitado[destino]) {
+            if (!visitado.get(destino)) {
                 dfsRecursivo(destino, visitado);
             }
         }
@@ -521,8 +563,8 @@ public class Grafo {
 
 class ConjuntoDisjunto {
 
-    private Map<Integer,Integer> parent;
-    private Map<Integer,Integer> rank;
+    private Map<Integer, Integer> parent;
+    private Map<Integer, Integer> rank;
 
     public ConjuntoDisjunto(int[] vertices) {
         parent = new HashMap<>();
