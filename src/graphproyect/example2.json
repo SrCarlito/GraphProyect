@@ -1,0 +1,12 @@
+{
+    "vertices": [0, 1, 2, 3],
+    "aristas": [
+      {"origen": 0, "destino": 1, "peso": 16},
+      {"origen": 1, "destino": 0, "peso": 10},
+      {"origen": 1, "destino": 3, "peso": 30},
+      {"origen": 3, "destino": 2, "peso": 15},
+      {"origen": 2, "destino": 3, "peso": 25},
+      {"origen": 2, "destino": 1, "peso": 15},
+      {"origen": 2, "destino": 0, "peso": 40}
+    ]
+  }

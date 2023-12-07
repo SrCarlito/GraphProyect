@@ -139,20 +139,20 @@ public class Grafo {
 
     public void emparejamiento_Coloreo() {
 
-        Map<Integer, Integer> coloreo = colorearVertices();;
+        Map<Integer, Integer> coloreo = colorearVertices();
+        ;
 
         Set<Integer> solicitantes = new HashSet<>();
         Set<Integer> requeridos = new HashSet<>();
         Set<Integer> coloresDiff = new HashSet<>(coloreo.values());
-        
 
-        if (coloresDiff.size() !=2 ) {
+        if (coloresDiff.size() != 2) {
             encontrarEmparejamientos();
         } else {
             int[] c1 = new int[2];
 
             int j = 0;
-            for(int i : coloresDiff){
+            for (int i : coloresDiff) {
                 c1[j] = i;
                 j++;
             }
@@ -185,14 +185,14 @@ public class Grafo {
                     List<Arista> requeridosActual = obtenerVecinosNoDirigido(s);
                     // ordenar de mayor a menor peso
                     Collections.sort(requeridosActual, Comparator.comparingInt(Arista::getPeso).reversed());
-                
+
                     for (Arista r : requeridosActual) { // Recorrer requeridos
                         // obtener vecinos de r
                         List<Arista> solicitantesR = obtenerVecinosNoDirigido(r.getDestino());
                         // ordenar de mayor a menor peso
                         solicitantesR.sort(Comparator.comparingInt(Arista::getPeso).reversed());
 
-                        //obtener solo los solicitantes
+                        // obtener solo los solicitantes
                         List<Integer> solicitantesRD = new ArrayList<>();
                         for (Arista a : solicitantesR) {
                             solicitantesRD.add(a.getDestino());
@@ -211,7 +211,8 @@ public class Grafo {
                                     s2 = entry.getKey();
                                 }
                             } // Obtener solicitante emparejado
-                            if (solicitantesRD.indexOf(s) < solicitantesRD.indexOf(s2)) { // Si el solicitante actual tiene mayor prioridad
+                            if (solicitantesRD.indexOf(s) < solicitantesRD.indexOf(s2)) { // Si el solicitante actual
+                                                                                          // tiene mayor prioridad
                                 emparejamiento.put(s, r.getDestino()); // Emparxejar
                                 emparejamiento.remove(s2); // Eliminar emparejamiento anterior
                                 solicitantesA.add(s2); // Agregar solicitante anterior a la lista
@@ -226,7 +227,7 @@ public class Grafo {
             }
 
         }
-        
+
         // Mostrar emparejamiento
         for (Map.Entry<Integer, Integer> entry : emparejamiento.entrySet()) {
             int solicitante = entry.getKey();
@@ -235,7 +236,6 @@ public class Grafo {
         }
 
     }
-
 
     // Resto del código de la clase Grafo
 
@@ -302,7 +302,7 @@ public class Grafo {
         return res;
     }
 
-    private Map<Integer,Integer> colorearVertices() {
+    private Map<Integer, Integer> colorearVertices() {
         Map<Integer, Integer> colores = new HashMap<>();
 
         // inicializar colores
@@ -375,49 +375,54 @@ public class Grafo {
 
     public void obtenerArbolExpansionMinima() {
 
-        Map<Integer, List<Arista>> aristas = getListaAdyacencia();
-        Map<Integer, List<Arista>> resultado = new HashMap<>();
-
-        // Ordenar aristas
-        for (int i : aristas.keySet()) {
-            aristas.get(i).sort(Comparator.comparingInt(Arista::getPeso));// 0rdenar de menor a mayor
-        }
+        ArrayList<int[]> aristas = new ArrayList<>();
+        ArrayList<int[]> resultado = new ArrayList<>();
 
         if (tienePesosNegativos()) {
             System.out.println(
                     "El grafo contiene aristas con pesos negativos, el algoritmo de Kruskal no puede ejecutarse correctamente.");
             return; // Retorna null para indicar que el grafo no es apto para Kruskal
         }
+        // Ordenar aristas
+        for (int i : obtenerVertices()) {
+            for (Arista a : obtenerVecinos(i)) {
+                int[] arista = { i, a.getDestino(), a.getPeso() };
+                aristas.add(arista);
+            }
+        }
+        //ordenar aristas de menor a mayor
+        aristas.sort(Comparator.comparingInt(a -> a[2]));
 
         ConjuntoDisjunto conjuntoDisjunto = new ConjuntoDisjunto(obtenerVertices());
 
-        for (int i : aristas.keySet()) {
-            List<Arista> aristasV = new ArrayList<>();
+        for (int[] arr : aristas) {
+            int origen = arr[0];
 
-            int origen = i;
-            for (Arista arista : aristas.get(i)) {
-                int destino = arista.getDestino();
+            int destino = arr[1];
 
-                int raizOrigen = conjuntoDisjunto.encontrar(origen);
-                int raizDestino = conjuntoDisjunto.encontrar(destino);
+            int raizOrigen = conjuntoDisjunto.encontrar(origen);
+            int raizDestino = conjuntoDisjunto.encontrar(destino);
 
-                if (raizOrigen != raizDestino) {
-                    aristasV.add(arista);
-                    conjuntoDisjunto.unir(raizOrigen, raizDestino);
-                }
+            if (raizOrigen != raizDestino) {
+                resultado.add(arr);
+                conjuntoDisjunto.unir(raizOrigen, raizDestino);
             }
-            resultado.put(origen, aristasV);
+
+           
 
         }
 
         // Imprimir resultado
-        for (Map.Entry<Integer, List<Arista>> entry : resultado.entrySet()) {
-            int vertice = entry.getKey();
-            List<Arista> vecinos = entry.getValue();
-            for (Arista arista : vecinos) {
-                System.out.println(vertice + " <-> " + arista.getDestino() + " (" + arista.getPeso() + ")");
-            }
+        int pesoTotal = 0;
+        System.out.println("--------------------");
+        System.out.println("Arbol de expansion minima");
+        for (int[] arr : resultado) {
+            System.out.println(arr[0] + " <-> " + arr[1] + " : " + arr[2]);
+            pesoTotal += arr[2];
         }
+        //imprimir peso total
+        System.out.println("Peso total: " + pesoTotal);
+
 
     }
 
@@ -444,14 +449,14 @@ public class Grafo {
         distancias.put(nodoOrigen, 0);// la distancia del nodo origen a el mismo es 0 (distancia minima)
 
         for (int i : obtenerVertices()) { // recorrer todos los nodos
-
             int nodoActual = obtenerNodoMinimo(distancias, visitado);// obtener el nodo con la distancia minima
             visitado.put(nodoActual, true);// marcar el nodo como visitado
 
             for (Arista arista : obtenerVecinos(nodoActual)) {// recorrer los vecinos del nodo actual
                 int nodoDestino = arista.getDestino();// obtener el nodo destino
                 int peso = arista.getPeso();// obtener el peso de la arista
-                if (!visitado.get(nodoDestino) && distancias.get(nodoActual) != Integer.MAX_VALUE && // si el nodo no ha                              // infinito
+                if (!visitado.get(nodoDestino) && distancias.get(nodoActual) != Integer.MAX_VALUE && // si el nodo no ha
+                                                                                                     // // infinito
                         distancias.get(nodoActual) + peso < distancias.get(nodoDestino)) // y la distancia del nodo
 
                 {
@@ -489,7 +494,7 @@ public class Grafo {
         if (nodoMinimo == -1) {// si el nodo minimo es igual a -1
             throw new RuntimeException("No se puede encontrar un nodo minimo");// lanzar una excepcion
         }
-      
+
         return nodoMinimo;
     }
 
