@@ -1,9 +1,17 @@
 {
-    "vertices": [0, 1, 4, 5],
+    "vertices": [0, 1, 4, 5,6,7],
     "aristas": [
      
-      {"origen":0,"destino":4,"peso":4},
-        {"origen":1,"destino":4,"peso":2},
-        {"origen":1,"destino":5,"peso":3}
+      
+
+        {"origen":0,"destino":7,"peso":10},
+        {"origen":0,"destino":5,"peso":4},
+        {"origen":0,"destino":6,"peso":10},
+        {"origen":1,"destino":7,"peso":15},
+        {"origen":1,"destino":5,"peso":7},
+        {"origen":1,"destino":6,"peso":8},
+        {"origen":4,"destino":7,"peso":4},
+        {"origen":4,"destino":5,"peso":11},
+        {"origen":4,"destino":6,"peso":2}
     ]
   }

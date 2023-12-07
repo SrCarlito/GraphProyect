@@ -25,7 +25,7 @@ public class GraphProyect {
     
     public static void main(String[] args) {
         
-        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\example.json");
+        String contenido = leerArchivo("C:\\Users\\lolsg\\OneDrive\\Documentos\\NetBeansProjects\\GraphProyect\\src\\graphproyect\\bipartito.json");
 
         if (contenido != null && !contenido.isEmpty()) {
             Grafo grafo = construirGrafoDesdeJSON(contenido);
@@ -47,7 +47,7 @@ public class GraphProyect {
 
                 System.out.println("--------------------------------- ");
                 System.out.println("Algoritmo de Dijkstra: ");
-                grafo.dijkstra(0);
+                grafo.dijkstra(1);
 
 
                 System.out.println("--------------------------------- ");
@@ -56,12 +56,8 @@ public class GraphProyect {
 
                 System.out.println("--------------------------------- ");
                 System.out.println("Colorear vértices:");
-                grafo.colorearVertices();
+                grafo.emparejamiento_Coloreo();
 
-
-                System.out.println("--------------------------------- ");
-                System.out.println("Encontrar emparejamientos:");
-                grafo.emparejamiento();
             } else {
                 System.out.println("No se pudo construir el grafo desde el archivo JSON.");
             }
